@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AdminPanel</class>
+ <widget class="QDialog" name="AdminPanel">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>967</width>
+    <height>716</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: #cecbc8;
+color: #614e41;
+font-size: 22px;
+border-radius: 10px;
+padding: 20px 10px; /* top &amp; bottom padding bigger */
+font-weight: bold;
+qproperty-alignment: AlignCenter;
+</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>130</y>
+     <width>271</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>-1</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: #28221e;
+color: #cecbc8;
+font-size: 24px;
+border-radius: 10px;
+padding: 10px;
+font-weight: bold;
+qproperty-alignment: AlignCenter;
+</string>
+   </property>
+   <property name="text">
+    <string>Admin Panel</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QFrame" name="containerframe">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>220</y>
+     <width>391</width>
+     <height>441</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QFrame#containerframe {
+    background-color: #28221e;       
+    border-radius: 15px;            
+    border: 2px solid #614e41;       
+}
+</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>341</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="leftMargin">
+      <number>20</number>
+     </property>
+     <property name="topMargin">
+      <number>20</number>
+     </property>
+     <property name="rightMargin">
+      <number>20</number>
+     </property>
+     <property name="bottomMargin">
+      <number>20</number>
+     </property>
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="btnSetLocation">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: #614e41;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+QPushButton:hover {
+    background-color: #7f6951;
+}
+
+QPushButton:pressed {
+    background-color: #4f3d33;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Set Location</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="labelselectlocation">
+       <property name="styleSheet">
+        <string notr="true">background-color: #614e41;
+color: #cecbc8;
+font-size: 24px;
+border-radius: 10px;
+padding: 10px;
+font-weight: bold;
+qproperty-alignment: AlignCenter;
+</string>
+       </property>
+       <property name="text">
+        <string>Select Location</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="2">
+      <widget class="QLabel" name="labelupcominglocation">
+       <property name="styleSheet">
+        <string notr="true">	background-color: #cecbc8;
+    	color: #28221e;
+    	border: 2px solid #614e41;
+    	border-radius: 10px;
+    	padding: 10px;
+    	font-size: 20px;
+   	font-weight: bold;</string>
+       </property>
+       <property name="text">
+        <string>Upcoming</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QComboBox" name="combocheckpoint">
+       <property name="styleSheet">
+        <string notr="true">border-radius: 10px;
+padding: 10px 20px;
+font-weight: bold;
+font-size: 16px;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QLabel" name="labelShowLocation">
+       <property name="styleSheet">
+        <string notr="true">QLabel#labelShowLocation {
+	background-color: #cecbc8;
+    	color: #28221e;
+    	border: 2px solid #614e41;
+    	border-radius: 10px;
+    	padding: 10px;
+    	font-size: 20px;
+   	font-weight: bold;
+}
+</string>
+       </property>
+       <property name="text">
+        <string>Currently</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
