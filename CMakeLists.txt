@@ -28,8 +28,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Smart_Bus_Fare_System
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        adminpanel.h adminpanel.cpp adminpanel.ui
     )
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Smart_Bus_Fare_System APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)

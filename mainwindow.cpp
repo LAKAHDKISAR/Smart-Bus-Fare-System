@@ -19,10 +19,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    //SQL - DATABASE IS HERE HAI FOR NOW RATNAPARK TO THIMI ROUTE ONE WAIT CHA AAILE KO LAGI PACHI CHANGE GARAMLA
+    // DB Driver Name : SQL Lite
+    // DATABASE OF THE ROUTE (RATNAPARK - THIMI).
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("smart_bus_fare_system.db");
+
+    //Generated the tabular format of the database in DB Browser
 
     if (!db.open()) {
         qDebug() << "Error: connection with database failed - " << db.lastError().text();
@@ -75,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
 
         //------------------------
 
-        // BROOO HERE CHAI DON'T EVEN ASK WHAT I DID HERE CAUSE I DON'T KNOWWWWW HAVE RE-WRITTEN CODES THOUSANDS OF TIMES, GPT WAS ALSO ABOUT TO CRASH OUT I THINK BRUH LETS NOT TOUCH THIS SECTION FOR NOW
+        //
 
         query.exec("SELECT COUNT(*) FROM routes WHERE route_name = 'Route Ratna Park - Thimi'");
         if (query.next()) {
@@ -149,7 +152,7 @@ void MainWindow::on_btnEnterBus_clicked()
 
         // SOMETIMES IF USER IS NEW THEN CONFLICT BHAYERA IT DOESNT WORK SO IF NEW USER THEN STARTS WITH ZERO BALANCE KIND OF REGISTER ( PURANO CODE IN MIXED BHAYO JASTO LAGCHA BUT LEAVE IT FOR NOW --- IF IT WORKS IT WORKS)
 
-        QSqlQuery insertQuery;  // NEW VARIABLE HERE TO AVOID CONFLICT - YO CHAI CHATGPT LE BHANEKO SO NOT GONNA TRY TO TOUCH THIS FOR NOW
+        QSqlQuery insertQuery;  // NEW VARIABLE HERE TO AVOID CONFLICT
         insertQuery.prepare("INSERT INTO cards (card_id, balance) VALUES (?, ?)");
         insertQuery.addBindValue(cardId);
         insertQuery.addBindValue(0.0);
@@ -161,7 +164,7 @@ void MainWindow::on_btnEnterBus_clicked()
 
     // UPCOMING CHECKPOINT LINE
     QString entryCheckpoint = ui->labelUpcomingCheckpoint->text().replace("Next stop: ", "");
-    QString entryTime = QDateTime::currentDateTime().toString(Qt::ISODate); // MAILE GARDA BHAYENA DON'T KNOW WHAT THIS LINE DOES, YO DATE TIME CLASS RAKHEKO CHA BUT RATI BHAYO ANI MERO MIND IS BLANK SO MAILE BUJINA BUT STILL IT WORKS SO OK
+    QString entryTime = QDateTime::currentDateTime().toString(Qt::ISODate); // DATE TIME CLASS
 
     // Reusing original query
     query.prepare("INSERT INTO travel_log (card_id, entry_checkpoint, entry_time) "
