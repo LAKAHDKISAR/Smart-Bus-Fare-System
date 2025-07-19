@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    // DB Driver Name : SQL Lite
+    // DB Driver Name : SQLITE
     // DATABASE OF THE ROUTE (RATNAPARK - THIMI).
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");

@@ -25,9 +25,14 @@ set(PROJECT_SOURCES
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Quick)
+
     qt_add_executable(Smart_Bus_Fare_System
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        admin_login.h admin_login.cpp admin_login.ui
+
+
     )
 
 # Define target properties for Android with Qt 6 as:
@@ -50,6 +55,7 @@ endif()
 
 # Link both Widgets and Sql modules
 target_link_libraries(Smart_Bus_Fare_System PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Sql)
+target_link_libraries(Smart_Bus_Fare_System PRIVATE Qt6::Core Qt6::Widgets Qt6::Quick)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
