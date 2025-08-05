@@ -2,49 +2,31 @@
 #define ADMIN_LOGIN_H
 
 #include <QDialog>
-#include <QMessageBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QFormLayout>
-#include <QHBoxLayout>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QCryptographicHash>
-#include <QSettings>
+#include <QSqlError>
 
-class AdminLogin : public QDialog
+namespace Ui {
+class admin_login;
+}
+
+class admin_login : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit AdminLogin(QWidget *parent = nullptr);
-    ~AdminLogin();
+    explicit admin_login(QWidget *parent = nullptr);
+    ~admin_login();
+
+    static bool isLoggedIn; // global session-like flag
 
 private slots:
-    void attemptLogin();
-    void cancelLogin();
+    void on_pushButton_login_clicked();
 
 private:
-    // UI Elements
-    QLabel *titleLabel;
-    QLabel *usernameLabel;
-    QLabel *passwordLabel;
-    QLineEdit *usernameEdit;
-    QLineEdit *passwordEdit;
-    QPushButton *loginButton;
-    QPushButton *cancelButton;
-
-    // Database connection
+    Ui::admin_login *ui;
     QSqlDatabase db;
-
-    bool initializeDatabase();
-    bool authenticate(const QString &username, const QString &password);
-    QString hashPassword(const QString &password, const QString &salt);
-    QString generateSalt();
-    void logLoginAttempt(const QString &username, bool success);
-    bool isAccountLocked(const QString &username);
+    void connectToDatabase();
 };
 
 #endif // ADMIN_LOGIN_H
