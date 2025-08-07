@@ -58,10 +58,10 @@ qproperty-alignment: AlignCenter;
   <widget class="QFrame" name="containerframe">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>220</x>
      <y>220</y>
-     <width>391</width>
-     <height>441</height>
+     <width>491</width>
+     <height>491</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -78,13 +78,13 @@ qproperty-alignment: AlignCenter;
    <property name="frameShadow">
     <enum>QFrame::Shadow::Raised</enum>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
       <y>30</y>
-      <width>341</width>
-      <height>371</height>
+      <width>451</width>
+      <height>431</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -103,6 +103,50 @@ qproperty-alignment: AlignCenter;
      <property name="spacing">
       <number>20</number>
      </property>
+     <item row="5" column="0" colspan="2">
+      <widget class="QLabel" name="labelupcominglocation">
+       <property name="styleSheet">
+        <string notr="true">background-color: #cecbc8;
+color: #28221e;
+border: 2px solid #614e41;
+border-radius: 10px;
+padding: 10px;
+font-size: 20px;
+font-weight: bold;
+</string>
+       </property>
+       <property name="text">
+        <string>Upcoming</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QComboBox" name="combocheckpoint">
+       <property name="styleSheet">
+        <string notr="true">border-radius: 10px;
+padding: 10px 20px;
+font-weight: bold;
+font-size: 16px;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="labelselectlocation">
+       <property name="styleSheet">
+        <string notr="true">background-color: #614e41;
+color: #cecbc8;
+font-size: 24px;
+border-radius: 10px;
+padding: 10px;
+font-weight: bold;
+qproperty-alignment: AlignCenter;
+</string>
+       </property>
+       <property name="text">
+        <string>Select Location</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
       <widget class="QPushButton" name="btnSetLocation">
        <property name="styleSheet">
@@ -129,49 +173,6 @@ QPushButton:pressed {
        </property>
       </widget>
      </item>
-     <item row="0" column="0" colspan="2">
-      <widget class="QLabel" name="labelselectlocation">
-       <property name="styleSheet">
-        <string notr="true">background-color: #614e41;
-color: #cecbc8;
-font-size: 24px;
-border-radius: 10px;
-padding: 10px;
-font-weight: bold;
-qproperty-alignment: AlignCenter;
-</string>
-       </property>
-       <property name="text">
-        <string>Select Location</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" colspan="2">
-      <widget class="QLabel" name="labelupcominglocation">
-       <property name="styleSheet">
-        <string notr="true">	background-color: #cecbc8;
-    	color: #28221e;
-    	border: 2px solid #614e41;
-    	border-radius: 10px;
-    	padding: 10px;
-    	font-size: 20px;
-   	font-weight: bold;</string>
-       </property>
-       <property name="text">
-        <string>Upcoming</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QComboBox" name="combocheckpoint">
-       <property name="styleSheet">
-        <string notr="true">border-radius: 10px;
-padding: 10px 20px;
-font-weight: bold;
-font-size: 16px;</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0" colspan="2">
       <widget class="QLabel" name="labelShowLocation">
        <property name="styleSheet">
@@ -188,6 +189,23 @@ font-size: 16px;</string>
        </property>
        <property name="text">
         <string>Currently</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="2">
+      <widget class="QLabel" name="labelDirection">
+       <property name="styleSheet">
+        <string notr="true">background-color: #cecbc8;
+color: #28221e;
+border: 2px solid #614e41;
+border-radius: 10px;
+padding: 10px;
+font-size: 20px;
+font-weight: bold;
+</string>
+       </property>
+       <property name="text">
+        <string>Direction</string>
        </property>
       </widget>
      </item>

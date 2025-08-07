@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "direction.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,21 +20,18 @@ public:
     void cleanCheckpoints(int routeId);
 
 public slots:
-    void updateUpcomingLocation(const QString &currentCheckpoint);
-
+    void updateUpcomingLocation(const QString &currentCheckpoint, Direction newDirection);
 
 private slots:
     void on_btnEnterBus_clicked();
-
     void on_btnExitBus_clicked();
-
     void on_btnRechargeCard_clicked();
-
     void on_btnAdminPanel_clicked();
-
     void on_btnExit_clicked();
 
 private:
     Ui::MainWindow *ui;
+
+    Direction currentDirection = Forward;
 };
 #endif // MAINWINDOW_H

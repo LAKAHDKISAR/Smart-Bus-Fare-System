@@ -19,7 +19,7 @@ AdminPanel::~AdminPanel()
 
 
 
-// LODING CHECKPOINTS IN DROP DOWN MENU ( TO TIRED FROM THISSSSSSSSS ERRROR ERROR ERROR DUPLCATESSSS BALLA BALLA FIXED )
+
 
 void AdminPanel::loadCheckpoints()
 {
@@ -64,7 +64,6 @@ void AdminPanel::loadCheckpoints()
 
 }
 
-// THIS IS ALSO THE CULPRIT WAS ABOUT TO CRASH OUT
 
 
 void AdminPanel::on_btnSetLocation_clicked()
@@ -74,6 +73,7 @@ void AdminPanel::on_btnSetLocation_clicked()
 
     if (currentCheckpoint.isEmpty()) {
         ui->labelShowLocation->setText("No checkpoint selected");
+        ui->labelDirection->setText("Direction: -");
         return;
     }
 
@@ -88,14 +88,25 @@ void AdminPanel::on_btnSetLocation_clicked()
     }
     ui->labelupcominglocation->setText("Upcoming: " + nextCheckpoint);
 
-    emit currentCheckpointChanged(currentCheckpoint);
+    // Updating the direction
+    QString directionText;
+    directionText = (currentDirection == Forward) ? "Direction: Ratna Park → Thimi": "Direction: Thimi → Ratna Park";
+
+    ui->labelDirection->setText(directionText);
+
+    emit currentCheckpointChanged(currentCheckpoint, currentDirection); //emit currentcheckpoint and also direction
 
     qDebug() << "Current checkpoint set to:" << currentCheckpoint;
 }
 
 
+
 QString AdminPanel::getCurrentCheckpoint() const {
     return ui->combocheckpoint->currentData().toString();
+}
+
+Direction AdminPanel::getCurrentDirection() const {
+    return currentDirection;
 }
 
 

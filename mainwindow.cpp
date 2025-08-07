@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    //SQL - DATABASE IS HERE HAI FOR NOW RATNAPARK TO THIMI ROUTE ONE WAIT CHA AAILE KO LAGI PACHI CHANGE GARAMLA
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("smart_bus_fare_system.db");
@@ -73,18 +72,14 @@ MainWindow::MainWindow(QWidget *parent)
             qDebug() << "Failed to create cards table: " << query.lastError().text();
         }
 
-        //------------------------
-
-        // BROOO HERE CHAI DON'T EVEN ASK WHAT I DID HERE CAUSE I DON'T KNOWWWWW HAVE RE-WRITTEN CODES THOUSANDS OF TIMES, GPT WAS ALSO ABOUT TO CRASH OUT I THINK BRUH LETS NOT TOUCH THIS SECTION FOR NOW
-
         query.exec("SELECT COUNT(*) FROM routes WHERE route_name = 'Route Ratna Park - Thimi'");
         if (query.next()) {
             int count = query.value(0).toInt();
 
-            // Always get the routeId
+
             int routeId = 0;
             if (count == 0) {
-                // Insert sample route if not already present
+
                 if (!query.exec("INSERT INTO routes (route_name, start_point, end_point, total_distance) VALUES ('Route Ratna Park - Thimi', 'Ratna Park', 'Thimi', 10.0)")) {
                     qDebug() << "Failed to insert sample route: " << query.lastError().text();
                 }
@@ -99,7 +94,6 @@ MainWindow::MainWindow(QWidget *parent)
 
             cleanCheckpoints(routeId);
 
-            // Insert checkpoints afresh
             QStringList points = {"Ratna Park", "MaitiGhar", "New Baneshwor", "Tinkune", "Koteshwor", "Thimi"};
             QList<double> distances = {0.0, 2.0, 4.0, 6.5, 8.0, 10.0};
 
@@ -113,7 +107,6 @@ MainWindow::MainWindow(QWidget *parent)
                     qDebug() << "Failed to insert checkpoint: " << insertCheckpointQuery.lastError().text();
                 }
             }
-
         }
     }
 
@@ -135,7 +128,7 @@ void MainWindow::on_btnEnterBus_clicked()
         return;
     }
 
-    QSqlQuery query;  // declare once
+    QSqlQuery query;
 
     query.prepare("SELECT balance FROM cards WHERE card_id = ?");
     query.addBindValue(cardId);
@@ -147,9 +140,8 @@ void MainWindow::on_btnEnterBus_clicked()
 
     if (!query.next()) {
 
-        // SOMETIMES IF USER IS NEW THEN CONFLICT BHAYERA IT DOESNT WORK SO IF NEW USER THEN STARTS WITH ZERO BALANCE KIND OF REGISTER ( PURANO CODE IN MIXED BHAYO JASTO LAGCHA BUT LEAVE IT FOR NOW --- IF IT WORKS IT WORKS)
 
-        QSqlQuery insertQuery;  // NEW VARIABLE HERE TO AVOID CONFLICT - YO CHAI CHATGPT LE BHANEKO SO NOT GONNA TRY TO TOUCH THIS FOR NOW
+        QSqlQuery insertQuery;  // NEW VARIABLE HERE TO AVOID CONFLICT
         insertQuery.prepare("INSERT INTO cards (card_id, balance) VALUES (?, ?)");
         insertQuery.addBindValue(cardId);
         insertQuery.addBindValue(0.0);
@@ -159,11 +151,38 @@ void MainWindow::on_btnEnterBus_clicked()
         }
     }
 
-    // UPCOMING CHECKPOINT LINE
-    QString entryCheckpoint = ui->labelUpcomingCheckpoint->text().replace("Next stop: ", "");
-    QString entryTime = QDateTime::currentDateTime().toString(Qt::ISODate); // MAILE GARDA BHAYENA DON'T KNOW WHAT THIS LINE DOES, YO DATE TIME CLASS RAKHEKO CHA BUT RATI BHAYO ANI MERO MIND IS BLANK SO MAILE BUJINA BUT STILL IT WORKS SO OK
+    // checking to prevent a card from entering again without exiting.
+    QSqlQuery activeTripCheck;
+    activeTripCheck.prepare("SELECT COUNT(*) FROM travel_log WHERE card_id = ? AND exit_checkpoint IS NULL");
+    activeTripCheck.addBindValue(cardId);
 
-    // Reusing original query
+    if (!activeTripCheck.exec()) {
+        QMessageBox::critical(this, "Error", "Failed to check active trip: " + activeTripCheck.lastError().text());
+        return;
+    }
+    if (activeTripCheck.next() && activeTripCheck.value(0).toInt() > 0) {
+        QMessageBox::warning(this, "Warning", "This card has already entered the bus. Please exit before entering again.");
+        return;
+    }
+
+    // Proceed to log entry if no active trip exists . if driver has not set the location then no log -in.
+    QString rawLabelText = ui->labelUpcomingCheckpoint->text();
+    qDebug() << "Raw labelUpcomingCheckpoint text:" << rawLabelText;
+
+    QString entryCheckpoint = rawLabelText;
+    if (rawLabelText.startsWith("Next stop: ")) {
+        entryCheckpoint = rawLabelText.mid(QString("Next stop: ").length()).trimmed();
+    }
+
+    qDebug() << "Processed entryCheckpoint text:" << entryCheckpoint;
+
+    if (entryCheckpoint.isEmpty() || entryCheckpoint.compare("End of route", Qt::CaseInsensitive) == 0) {
+        QMessageBox::warning(this, "Warning", "No valid upcoming checkpoint is set. Please wait for the next stop.");
+        return;
+    }
+
+    QString entryTime = QDateTime::currentDateTime().toString(Qt::ISODate);
+
     query.prepare("INSERT INTO travel_log (card_id, entry_checkpoint, entry_time) "
                   "VALUES (:cardId, :entryCheckpoint, :entryTime)");
     query.bindValue(":cardId", cardId);
@@ -175,6 +194,7 @@ void MainWindow::on_btnEnterBus_clicked()
     } else {
         QMessageBox::critical(this, "Error", "Failed to log entry: " + query.lastError().text());
     }
+
 }
 
 
@@ -273,12 +293,14 @@ void MainWindow::on_btnExitBus_clicked()
     updateQuery.addBindValue(fare);
     updateQuery.addBindValue(travelId);
 
+    // balance and remaining balance
     if (updateQuery.exec()) {
-        QMessageBox::information(this, "Success", QString("Trip completed. Fare: ₨ %1").arg(fare, 0, 'f', 2));
+        QMessageBox::information(this, "Success",QString("Trip completed.\nFare: ₨ %1\nRemaining Balance: ₨ %2").arg(fare, 0, 'f', 2).arg(newBalance, 0, 'f', 2));
         updateFareDisplay(fare);
     } else {
         QMessageBox::critical(this, "Error", "Failed to update travel log: " + updateQuery.lastError().text());
     }
+
 }
 
 //-----------------
@@ -293,6 +315,24 @@ void MainWindow::on_btnRechargeCard_clicked()
         return;
     }
 
+    QSqlQuery query;
+    query.prepare("SELECT balance FROM cards WHERE card_id = ?");
+    query.addBindValue(cardId);
+
+    double currentBalance = 0.0;
+    bool cardExists = false;
+
+    if (query.exec() && query.next()) {
+        currentBalance = query.value(0).toDouble();
+        cardExists = true;
+
+        // Show current balance to user before recharge
+        QMessageBox::information(this, "Current Balance", QString("Current balance for Card ID %1 is ₨ %2").arg(cardId).arg(currentBalance, 0, 'f', 2));
+    } else {
+        // Card does not exist
+        QMessageBox::information(this, "Card Not Found", "Card not found. New card will be created on recharge.");
+    }
+
     bool ok;
     double amount = QInputDialog::getDouble(this, "Recharge Card", "Enter amount to recharge:", 0, 0, 10000, 2, &ok);
     if(!ok) {
@@ -300,20 +340,8 @@ void MainWindow::on_btnRechargeCard_clicked()
         return;
     }
 
-    QSqlQuery query;
-
-    // Checking if card exists, aaile lai it exits if we input it in Enter bus
-
-    query.prepare("SELECT balance FROM cards WHERE card_id = ?");
-    query.addBindValue(cardId);
-
-    double currentBalance = 0.0;
-
-    if (query.exec() && query.next()) {
-        currentBalance = query.value(0).toDouble();
-
+    if(cardExists) {
         // Update balance
-
         double newBalance = currentBalance + amount;
         QSqlQuery updateQuery;
         updateQuery.prepare("UPDATE cards SET balance = ? WHERE card_id = ?");
@@ -325,9 +353,7 @@ void MainWindow::on_btnRechargeCard_clicked()
             return;
         }
     } else {
-
-        // Yei ho it inserts new card with balence first ma ani I think yesai le mathi problem ekchoti garirako thyo cause mathi bata ni I tried to do the same, But feri yo aaileko chalirako cha ---
-
+        // Insert new card
         QSqlQuery insertQuery;
         insertQuery.prepare("INSERT INTO cards (card_id, balance) VALUES (?, ?)");
         insertQuery.addBindValue(cardId);
@@ -338,11 +364,10 @@ void MainWindow::on_btnRechargeCard_clicked()
             return;
         }
     }
-
-    // popup
-
+    //popup
     QMessageBox::information(this, "Success", QString("Recharged ₨ %1 for Card ID: %2").arg(amount).arg(cardId));
 }
+
 
 
 // Admin Window
@@ -350,13 +375,18 @@ void MainWindow::on_btnRechargeCard_clicked()
 void MainWindow::on_btnAdminPanel_clicked()
 {
     AdminPanel admin(this);
-    connect(&admin, &AdminPanel::currentCheckpointChanged, this, &MainWindow::updateUpcomingLocation);
+
+    connect(&admin, &AdminPanel::currentCheckpointChanged,this, &MainWindow::updateUpcomingLocation);
+
     admin.exec();
 
-
+    // After closing dialog, updating ui manually
     QString checkpoint = admin.getCurrentCheckpoint();
-    updateUpcomingLocation(checkpoint);
+    Direction direction = admin.getCurrentDirection();
+
+    updateUpcomingLocation(checkpoint, direction);
 }
+
 
 
 
@@ -369,7 +399,7 @@ void MainWindow::on_btnExit_clicked()
 }
 
 
-// Fare Display --------(yo kati ramro sanga bhayo yei mathi hudaina nonsence)--------
+// Fare Display
 
 void MainWindow::updateFareDisplay(double fareAmount) {
     ui->labelFareDisplay->setText("Fare: ₨ " + QString::number(fareAmount, 'f', 2));
@@ -378,43 +408,71 @@ void MainWindow::updateFareDisplay(double fareAmount) {
 
 // Upcoming Location
 
-void MainWindow::updateUpcomingLocation(const QString &currentCheckpoint)
+void MainWindow::updateUpcomingLocation(const QString &currentCheckpoint, Direction newDirection)
 {
-    // Query checkpoints ordered by distance. // don't know simply tanda bhayena signal diyera admin page bata
+    currentDirection = newDirection;
     QSqlQuery query;
     query.prepare("SELECT checkpoint_name FROM checkpoints ORDER BY distance_from_start ASC");
 
+    QStringList checkpoints;
     if (!query.exec()) {
         qDebug() << "Failed to get checkpoints:" << query.lastError().text();
         return;
     }
 
-    QString nextCheckpoint;
-    bool foundCurrent = false;
-
     while (query.next()) {
-        QString checkpoint = query.value(0).toString();
-        if (foundCurrent) {
-            nextCheckpoint = checkpoint;
-            break;
+        checkpoints.append(query.value(0).toString());
+    }
+
+    int currentIndex = checkpoints.indexOf(currentCheckpoint);
+    if (currentIndex == -1) {
+        qDebug() << "Current checkpoint not found in checkpoints list!";
+        return;
+    }
+
+    QString nextCheckpoint;
+
+    if (currentDirection == Forward) {
+        if (currentIndex == checkpoints.size() - 1) {
+            // Reached last checkpoint, reverse direction
+            currentDirection = Backward;
+            qDebug() << "Reached end, switching direction to Backward";
+            nextCheckpoint = (currentIndex - 1 >= 0) ? checkpoints[currentIndex - 1] : "";
+        } else {
+            nextCheckpoint = checkpoints[currentIndex + 1];
         }
-        if (checkpoint == currentCheckpoint) {
-            foundCurrent = true;
+    } else { // Backward
+        if (currentIndex == 0) {
+            // Reached first checkpoint, reverse direction
+            currentDirection = Forward;
+            qDebug() << "Reached start, switching direction to Forward";
+            nextCheckpoint = (currentIndex + 1 < checkpoints.size()) ? checkpoints[currentIndex + 1] : "";
+        } else {
+            nextCheckpoint = checkpoints[currentIndex - 1];
         }
     }
 
     if (nextCheckpoint.isEmpty()) {
-        nextCheckpoint = "End of route";
+        nextCheckpoint = "Last Stop";
     }
-
-    // Ya cai update gareko Mathi dk
 
     ui->labelUpcomingCheckpoint->setText("Next stop: " + nextCheckpoint);
 
+    // Update direction label
+    QString directionText = (currentDirection == Forward) ? "Direction: Ratna Park → Thimi" : "Direction: Thimi → Ratna Park";
+
+    ui->labelDirection->setText(directionText);
+
+    qDebug() << "Current checkpoint:" << currentCheckpoint;
+    qDebug() << "Next checkpoint:" << nextCheckpoint;
+    qDebug() << "Direction:" << (currentDirection == Forward ? "Forward" : "Backward");
 }
 
-// One of the block of code that cleans the checkpoint cause of tyo hawa error in admin pannel select location option ---- I think I have used this same type of code (block of code that does same thing) multiple time mathi, don't know if this one still works but solved bhayo error , SO NOT GONNA TOUCH THIS ALSO
 
+
+
+
+// to clean checkpoints
 void MainWindow::cleanCheckpoints(int routeId)
 {
     QSqlQuery query;
